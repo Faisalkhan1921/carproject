@@ -1,0 +1,131 @@
+<body>
+    <section class="exercises" style="padding-top: 0.5rem; padding-bottom: 0.5rem">
+        <div style="display: flex; justify-content: center; margin-top: 0.75rem;">
+            <div style="text-align: center; margin: 0 auto;">
+         <img src="{{asset('sitelogo/logo.png')}}" width="80px" height="80px" alt="">
+            </div>
+        </div>
+
+        <div style="width: 100%; margin: 0 auto; display: flex; flex-direction: column;">
+
+            <!-- Title -->
+            <div style="padding-top: 0.5rem; padding-bottom: 0.5rem; color: white; text-align: center; background: #FFC000;">
+                <div class="module-title">
+                    Warmup
+                </div>
+                <div class="module-subtitle">
+                    {{ $user->warmup_subtitle }}
+                </div>
+            </div>
+
+            <!-- Exercises -->
+            <div style="display: flex; width: 100%; margin-top: 3rem; flex-direction: column; align-items: center;">
+
+                @forelse ($warmup as $warm)
+                    @php 
+                        $warmup_rec = App\Models\UserAllotedModule::where('id', $warm->warnup_id)->first();
+                        if($warmup_rec) {
+                            $title = $warmup_rec->title;
+                        }
+
+                        $exercise_ids = App\Models\ModuleLibraryPivot::where('user_allotted_module_id', $warm->warnup_id)->pluck('exercise_id')->toArray();
+                        $exercises = App\Models\Exercise::whereIn('id', $exercise_ids)->orderByRaw('FIELD(id, ' . implode(',', $exercise_ids) . ') asc')->get();
+                    @endphp
+
+                    <div class="exercise-column" style="padding-left: 0.75rem; padding-right: 0.75rem; float: left; width: 40%; padding-bottom: 30px;">
+                        @foreach($exercises as $exercise)
+                            <div style="text-align: center; width: 120px; height: 86px; overflow: hidden; margin: 0 auto;">
+                                <img class="module-img" src="{{ isset($exercise) ? asset('storage/'.$exercise->exercise_image) : asset('storage/default_image.jpg') }}" alt="Exercise Image" style="width: 100%; height: 100%; object-fit: contain;">
+                            </div>
+                            <div class="exercise-title" style="padding-top: 0.3rem; padding-bottom: 1rem; margin-top: 0.5rem; width: 100%; text-align: center;">
+                                <p style="margin-bottom: 0;">{{ $exercise->title }}</p>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    @if ($loop->index % 2 == 0)
+                        <div style="width: 10%; float: left;"></div>
+                    @else
+                        <div style="clear: both;"></div>
+                    @endif
+
+                @empty
+                    <div class="text-center">
+                        <div class="fst-italic" style="color: #dadada">
+                            <h5 class="fw-semibold">No Data Found</h5>
+                        </div>
+                    </div>
+                @endforelse
+
+            </div>
+
+        </div>
+
+    </section>
+</body>
+
+
+
+
+<body>
+    <section class="exercises" style="padding-top: 0.5rem; padding-bottom: 0.5rem">
+        <div style="display: flex; justify-content: center; margin-top: 0.75rem;">
+            <div style="text-align: center; margin: 0 auto;">
+                <img src="{{ asset('sitelogo/logo.png') }}" width="80px" height="80px" alt="">
+            </div>
+        </div>
+
+        <div style="width: 100%; margin: 0 auto; display: flex; flex-direction: column;">
+
+            <!-- Title -->
+            <div style="padding-top: 0.5rem; padding-bottom: 0.5rem; color: white; text-align: center; background: #FFC000;">
+                <div class="module-title">
+                    Cool Down
+                </div>
+
+                <div class="module-subtitle">
+                    {{ $user->cooldown_subtitle }}
+                </div>
+            </div>
+
+            <!-- Exercises -->
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; margin-top: 3rem; ;">
+
+                @if ($cooldown->isEmpty())
+                    <div class="text-center">
+                        <div class="fst-italic" style="color: #dadada">
+                            <h5 class="fw-semibold">No Data Found</h5>
+                        </div>
+                    </div>
+                @else
+                    @foreach ($cooldown as $warm)
+                        @php 
+                            $warmup_rec = App\Models\UserAllotedModule::where('id', $warm->cooldown_id)->first();
+                            if ($warmup_rec) {
+                                $title = $warmup_rec->title;
+                            }
+
+                            $exercise_ids = App\Models\ModuleLibraryPivot::where('user_allotted_module_id', $warm->cooldown_id)->pluck('exercise_id')->toArray();
+                            $exercises = App\Models\Exercise::whereIn('id', $exercise_ids)->orderByRaw('FIELD(id, ' . implode(',', $exercise_ids) . ') asc')->get();
+                        @endphp
+
+                            @foreach ($exercises as $exercise)
+                        <div class="exercise-column" style="padding: 0.75rem; width: 40%; flex: 2  auto;">
+                                <div style="text-align: center; width: 120px; height: 86px; overflow: hidden; margin-bottom: 1rem;">
+                                    <img class="module-img" src="{{ isset($exercise) ? asset('storage/'.$exercise->exercise_image) : asset('storage/default_image.jpg') }}" alt="Exercise Image" style="width: 100%; height: 100%; object-fit: contain;">
+                                </div>
+                                <div class="exercise-title" style="padding-top: 0.3rem; padding-bottom: 1rem; text-align: center;">
+                                    <p style="margin-bottom: 0;">{{ $exercise->title }}</p>
+                                </div>
+                        </div>
+                            @endforeach
+
+                    @endforeach
+                @endif
+
+            </div>
+
+        </div>
+
+    </section>
+</body>
