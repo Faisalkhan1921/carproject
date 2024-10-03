@@ -53,6 +53,7 @@ style="
 
 
 
+<<<<<<< HEAD
 <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
         aria-expanded="true" aria-controls="collapsePages">
@@ -70,6 +71,28 @@ style="
         </div>
     </div>
 </li>
+=======
+<!-- <li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
+        aria-expanded="true" aria-controls="collapsePages">
+
+        <i class="fa-solid fa-globe text-light"></i>
+        <span>CMS</span>
+    </a>
+    <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+        <h6 class="collapse-header">Competition Entries:</h6>
+        <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Settings:</h6>
+            <a class="collapse-item" href="login.html">Messages</a>
+            <a class="collapse-item" href="register.html">Services</a>
+            <a class="collapse-item" href="forgot-password.html">Coupouns</a>
+            <div class="collapse-divider"></div>
+            <a class="collapse-item" href="404.html">Slider</a>
+            <a class="collapse-item" href="blank.html">Modules</a>
+        </div>
+    </div>
+</li> -->
+>>>>>>> a33233698159e94a55f4d165728bde9a4dfe18f5
 
 <!-- Nav Item - Pages Collapse Menu -->
 
