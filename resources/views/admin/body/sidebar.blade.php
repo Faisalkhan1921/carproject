@@ -53,7 +53,6 @@ style="
 
 
 
-<<<<<<< HEAD
 <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
         aria-expanded="true" aria-controls="collapsePages">
@@ -71,7 +70,7 @@ style="
         </div>
     </div>
 </li>
-=======
+
 <!-- <li class="nav-item">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
         aria-expanded="true" aria-controls="collapsePages">
@@ -92,7 +91,7 @@ style="
         </div>
     </div>
 </li> -->
->>>>>>> a33233698159e94a55f4d165728bde9a4dfe18f5
+
 
 <!-- Nav Item - Pages Collapse Menu -->
 
