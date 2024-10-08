@@ -2,10 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminController;
-<<<<<<< HEAD
+
 use App\Http\Controllers\Admin\ShowRoomController;
-=======
->>>>>>> a33233698159e94a55f4d165728bde9a4dfe18f5
+
 use Laravel\Jetstream\Http\Controllers\Inertia\CurrentUserController;
 
 /*
@@ -31,7 +30,7 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return view('admin.index');
     })->name('dashboard');
-<<<<<<< HEAD
+
 
     // Route::get('/dashboard', function () {return view('admin.index');})->name('dashboard');
     Route::get('admin/showroom',[ShowRoomController::class,'index'])->name('admin.car_showroom');
@@ -43,7 +42,6 @@ Route::middleware([
 
 
 
-=======
->>>>>>> a33233698159e94a55f4d165728bde9a4dfe18f5
+
 });
 Route::get('user/logout',[AdminController::class,'destroy'])->name('user.logout');

@@ -62,10 +62,11 @@
 </head>
 
 <body class="" style="
-background: #182539;
-background: -webkit-linear-gradient(to right, #182539, 182539); 
-  background: linear-gradient(to right, #182539, 182539);
+  background: #FF4500; /* Fallback color (Orange Red) */
+  background: -webkit-linear-gradient(to right, #FF4500, #101010); /* Safari 5.1 to 6.0 */
+  background: linear-gradient(to right, #FF4500, #101010); /* Standard syntax */
 ">
+
 
     <div class="container login-container">
         <div class="col-xl-5 col-lg-6 col-md-8">
@@ -76,7 +77,7 @@ background: -webkit-linear-gradient(to right, #182539, 182539);
                         <div class="col-lg-12">
                             <div class="p-5">
                                 <div class="text-center">
-                                    <h1 class="h4 text-gray-900 mb-4">Car Project Login</h1>
+                                    <h1 class="h4 text-gray-900 mb-4">{{ __('login.car_project_login') }}</h1>
                                     @if (session('error'))
                                     <div class="alert alert-danger">
                                         {{ session('error') }}
@@ -93,10 +94,10 @@ background: -webkit-linear-gradient(to right, #182539, 182539);
                                 <form method="POST" action="{{ route('login') }}">
                                 @csrf
                                     <div class="form-group">
-                                        <input type="email" class="form-control form-control-user" name="email" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Email Address...">
+                                        <input type="email" class="form-control form-control-user" name="email" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="{{ __('login.enter_email_address') }}">
                                     </div>
                                     <div class="form-group input-group">
-                                        <input type="password" class="form-control form-control-user" name="password" id="exampleInputPassword" placeholder="Password">
+                                        <input type="password" class="form-control form-control-user" name="password" id="exampleInputPassword" placeholder="{{ __('login.password') }}">
                                         <div class="input-group-append">
                                             <span class="input-group-text" onclick="togglePassword()">
                                                 <i class="fas fa-eye" id="togglePasswordIcon"></i>
@@ -106,12 +107,12 @@ background: -webkit-linear-gradient(to right, #182539, 182539);
                                     <div class="form-group">
                                         <div class="custom-control custom-checkbox small">
                                             <input type="checkbox" class="custom-control-input" id="customCheck">
-                                            <label class="custom-control-label" for="customCheck">Remember Me</label>
+                                            <label class="custom-control-label" for="customCheck">{{ __('login.remember_me') }}</label>
                                         </div>
                                     </div>
 
 
-                                    <input type="submit" value="Login" style="
+                                    <input type="submit" value="{{ __('login.login') }}" style="
 background: #182539;
 background: -webkit-linear-gradient(to right, #182539, #182539); 
   background: linear-gradient(to right, #182539, #182539);

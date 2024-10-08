@@ -62,10 +62,11 @@
 </head>
 
 <body class="" style="
-background: #182539;
-background: -webkit-linear-gradient(to right, #182539, #182539); 
-  background: linear-gradient(to right, #182539, #182539);
+  background: #FF4500; /* Fallback color (Orange Red) */
+  background: -webkit-linear-gradient(to right, #FF4500, #101010); /* Safari 5.1 to 6.0 */
+  background: linear-gradient(to right, #FF4500, #101010); /* Standard syntax */
 ">
+
 
     <div class="container login-container">
         <div class="col-xl-5 col-lg-6 col-md-8">
@@ -76,7 +77,7 @@ background: -webkit-linear-gradient(to right, #182539, #182539);
                         <div class="col-lg-12">
                             <div class="p-5">
                                 <div class="text-center">
-                                    <h1 class="h4 text-gray-900 mb-4">Car Project Registration</h1>
+                                    <h1 class="h4 text-gray-900 mb-4">{{ __('register.car_project_login') }}</h1>
                                     @if (session('error'))
                                     <div class="alert alert-danger">
                                         {{ session('error') }}
@@ -94,15 +95,15 @@ background: -webkit-linear-gradient(to right, #182539, #182539);
             @csrf
 
             <div class="form-group">
-    <x-input id="name" class="form-control form-control-user" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" placeholder="Enter Your Name..." />
+    <x-input id="name" class="form-control form-control-user" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" placeholder="{{ __('register.enter_your_name') }}" />
 </div>
 
 <div class="form-group">
-    <x-input id="email" class="form-control form-control-user" type="email" name="email" :value="old('email')" required autocomplete="username" placeholder="Enter Email Address..." />
+    <x-input id="email" class="form-control form-control-user" type="email" name="email" :value="old('email')" required autocomplete="username" placeholder="{{ __('register.enter_email_address') }}" />
 </div>
 
 <div class="form-group input-group">
-    <x-input id="password" class="form-control form-control-user" type="password" name="password" required autocomplete="new-password" placeholder="Password" />
+    <x-input id="password" class="form-control form-control-user" type="password" name="password" required autocomplete="new-password" placeholder="{{ __('register.password') }}" />
     <div class="input-group-append">
         <span class="input-group-text" onclick="togglePassword('password', 'togglePasswordIcon1')">
             <i class="fas fa-eye" id="togglePasswordIcon1"></i>
@@ -111,7 +112,7 @@ background: -webkit-linear-gradient(to right, #182539, #182539);
 </div>
 
 <div class="form-group input-group">
-    <x-input id="password_confirmation" class="form-control form-control-user" type="password" name="password_confirmation" required autocomplete="new-password" placeholder="Password Confirmation" />
+    <x-input id="password_confirmation" class="form-control form-control-user" type="password" name="password_confirmation" required autocomplete="new-password" placeholder="{{ __('register.enter_confirmation_password') }}" />
     <div class="input-group-append">
         <span class="input-group-text" onclick="togglePassword('password_confirmation', 'togglePasswordIcon2')">
             <i class="fas fa-eye" id="togglePasswordIcon2"></i>
@@ -123,11 +124,11 @@ background: -webkit-linear-gradient(to right, #182539, #182539);
 <div class="form-group">
     <div class="custom-control custom-checkbox small">
         <input type="checkbox" class="custom-control-input" id="customCheck" name="remember">
-        <label class="custom-control-label" for="customCheck">Remember Me</label>
+        <label class="custom-control-label" for="customCheck">{{ __('register.remember_me') }}</label>
     </div>
 </div>
 
-<input type="submit" value="Register" class="btn btn-user btn-block" style="background: #182539; background: -webkit-linear-gradient(to right, #182539, #182539); background: linear-gradient(to right, #182539, #182539);">
+<input type="submit" value="{{ __('register.register') }}" class="btn btn-user btn-block" style="background: #182539; background: -webkit-linear-gradient(to right, #182539, #182539); background: linear-gradient(to right, #182539, #182539);">
                                   
                                 </form>
                               

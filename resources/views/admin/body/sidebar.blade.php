@@ -22,11 +22,10 @@ $admin = Auth::guard('web')->user()->role_id;
 
 <ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar"
 style="
- background: #141e30; 
-  background: -webkit-linear-gradient(to right, #141e30, #243b55); 
-  background: linear-gradient(to right, #141e30, #243b55); 
-"
->
+  background: #FF4500; /* Fallback color (Orange Red) */
+  background: -webkit-linear-gradient(to right, #FF4500, #101010); /* Safari 5.1 to 6.0 */
+  background: linear-gradient(to right, #FF4500, #101010); /* Standard syntax */
+">
 
 <!-- Sidebar - Brand -->
 <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
@@ -34,18 +33,18 @@ style="
         <!-- <i class="fas fa-laugh-wink"></i> -->
          <img src="https://thumbs.dreamstime.com/b/car-mechanic-concept-avatar-vector-illustration-graphic-design-135452674.jpg" width="80px" height="80px" alt="">
     </div>
-    <div class="sidebar-brand-text mx-3">Car Project</sup></div>
+    <div class="sidebar-brand-text mx-3">{{ __('sidebar.car_project') }}</sup></div>
 </a>
 
 <!-- Divider -->
 <hr class="sidebar-divider my-0">
-<input type="text" id="sidebarSearchInput" class="form-control" placeholder="Search...">
+<input type="text" id="sidebarSearchInput" class="form-control" placeholder="{{ __('sidebar.search') }}">
 
 <!-- Nav Item - Dashboard -->
 <li class="nav-item active">
     <a class="nav-link" href="{{url('dashboard')}}">
         <i class="fas fa-fw fa-tachometer-alt"></i>
-        <span>Dashboard</span></a>
+        <span>{{ __('sidebar.dashboard') }}</span></a>
 </li>
 
 <!-- Divider -->
@@ -59,13 +58,13 @@ style="
 
         <i class="fa-solid fa-car text-light"></i>
 
-        <span>ShowRoom</span>
+        <span>{{ __('sidebar.showroom') }}</span>
     </a>
     <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
    
         <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Car Show Room:</h6>
-            <a class="collapse-item" href="{{route('admin.car_showroom')}}">View</a>
+            <h6 class="collapse-header">{{ __('sidebar.car_showroom') }}:</h6>
+            <a class="collapse-item" href="{{route('admin.car_showroom')}}">{{ __('sidebar.view') }}</a>
           
         </div>
     </div>

@@ -11,9 +11,9 @@
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h5 class="m-0 font-weight-bold text-primary">
-                    <i class="fa-solid fa-car text-dark"></i> ShowRoom Records
+                    <i class="fa-solid fa-car text-dark"></i> {{ __('showroompage.showroom_records') }}
                     <a href="#" class="btn btn-success btn-sm float-right" id="btn-add" data-toggle="modal" data-target="#addNewModal">
-                        <i class="fa-solid fa-square-plus text-light"></i> Add New
+                        <i class="fa-solid fa-square-plus text-light"></i>  {{ __('showroompage.add_new') }}
                     </a>
                 </h5>
             </div>
@@ -22,11 +22,11 @@
                     <table class="table table-bordered users-table" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>Sno</th>
-                                <th>Part</th>
-                                <th>Kind</th>
-                                <th>Price</th>
-                                <th>Action</th>
+                                <th> {{ __('showroompage.sno') }}</th>
+                                <th> {{ __('showroompage.parts') }}</th>
+                                <th> {{ __('showroompage.kinds') }}</th>
+                                <th> {{ __('showroompage.price') }}</th>
+                                <th> {{ __('showroompage.action') }}</th>
                             </tr>
                         </thead>
                         <tbody id="showroom-table-body">
@@ -39,8 +39,8 @@
                                         <td>{{ $item->kind }}</td>
                                         <td>{{ $item->price }}</td>
                                         <td>
-                                            <a href="javascript:void(0)" class="btn btn-primary btn-sm edit-car-part" data-id="{{ $item->id }}" data-part="{{ $item->part }}" data-kind="{{ $item->kind }}" data-price="{{ $item->price }}">Edit</a>
-                                            <a href="javascript:void(0)" data-id="{{ $item->id }}" class="btn btn-danger btn-sm delete-car-part">Delete</a>
+                                            <a href="javascript:void(0)" class="btn btn-primary btn-sm edit-car-part" data-id="{{ $item->id }}" data-part="{{ $item->part }}" data-kind="{{ $item->kind }}" data-price="{{ $item->price }}"> {{ __('showroompage.edit') }}</a>
+                                            <a href="javascript:void(0)" data-id="{{ $item->id }}" class="btn btn-danger btn-sm delete-car-part"> {{ __('showroompage.delete') }}</a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -60,7 +60,7 @@
                     <div class="row">
                         <div class="col-md-6"></div>
                         <div class="col-md-6">
-                <h7>Current Time in Saudi Arabia (AST)</h7>
+                <h7> {{ __('showroompage.current_time_saudi_arabia') }}</h7>
                 <div id="time" style="font-size: 2rem; font-weight: bold;"></div>
             </div>
                     </div>
@@ -79,7 +79,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addNewModalLabel">Add New Part</h5>
+                <h5 class="modal-title" id="addNewModalLabel"> {{ __('showroompage.add_new_part') }}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -87,21 +87,21 @@
             <div class="modal-body">
                 <form id="addPartForm">
                     <div class="form-group">
-                        <label for="partKind">Part</label>
+                        <label for="partKind"> {{ __('showroompage.parts') }}</label>
                         <select class="form-control" id="partKind" required></select>
                     </div>
 
                     <div class="form-group">
-                        <label for="carModel">Kind</label>
+                        <label for="carModel"> {{ __('showroompage.kinds') }}</label>
                         <select class="form-control" id="carModel" required></select>
                     </div>
 
                     <div class="form-group">
-                        <label for="price">Price</label>
+                        <label for="price"> {{ __('showroompage.price') }}</label>
                         <input type="text" name="price" class="form-control" id="price" required>
                     </div>
 
-                    <input type="submit" value="Submit" class="form-control btn btn-primary">
+                    <input type="submit" value=" {{ __('showroompage.submit') }}" class="form-control btn btn-primary">
                 </form>
             </div>
         </div>
@@ -113,7 +113,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editModalLabel">Edit Part</h5>
+                <h5 class="modal-title" id="editModalLabel"> {{ __('showroompage.edit_part') }}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -123,21 +123,21 @@
                     <input type="hidden" id="editPartId" value="">
                     
                     <div class="form-group">
-                        <label for="editPartKind">Part</label>
+                        <label for="editPartKind"> {{ __('showroompage.parts') }}</label>
                         <select class="form-control" id="editPartKind" required></select>
                     </div>
 
                     <div class="form-group">
-                        <label for="editCarModel">Kind</label>
+                        <label for="editCarModel"> {{ __('showroompage.kinds') }}</label>
                         <select class="form-control" id="editCarModel" required></select>
                     </div>
 
                     <div class="form-group">
-                        <label for="editPrice">Price</label>
+                        <label for="editPrice"> {{ __('showroompage.price') }}</label>
                         <input type="text" name="editPrice" class="form-control" id="editPrice" required>
                     </div>
 
-                    <input type="submit" value="Update" class="form-control btn btn-primary">
+                    <input type="submit" value=" {{ __('showroompage.update') }}" class="form-control btn btn-primary">
                 </form>
             </div>
         </div>
