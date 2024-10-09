@@ -62,10 +62,11 @@
 </head>
 
 <body class="" style="
-  background: #FF4500; /* Fallback color (Orange Red) */
-  background: -webkit-linear-gradient(to right, #FF4500, #101010); /* Safari 5.1 to 6.0 */
-  background: linear-gradient(to right, #FF4500, #101010); /* Standard syntax */
+  background: #ff6600; /* Fallback color (Orange) */
+  background: -webkit-linear-gradient(to right, #ff6600, #ff6600); /* Safari 5.1 to 6.0 */
+  background: linear-gradient(to right, #ff6600, #ff6600); /* Standard syntax */
 ">
+
 
 
     <div class="container login-container">

@@ -21,17 +21,17 @@ $admin = Auth::guard('web')->user()->role_id;
 
 
 <ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar"
-style="
-  background: #FF4500; /* Fallback color (Orange Red) */
-  background: -webkit-linear-gradient(to right, #FF4500, #101010); /* Safari 5.1 to 6.0 */
-  background: linear-gradient(to right, #FF4500, #101010); /* Standard syntax */
+<body class="" style="
+  background: #ff6600; /* Fallback color (Orange) */
+  background: -webkit-linear-gradient(to right, #ff6600, #ff6600); /* Safari 5.1 to 6.0 */
+  background: linear-gradient(to right, #ff6600, #ff6600); /* Standard syntax */
 ">
 
 <!-- Sidebar - Brand -->
 <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
     <div class="sidebar-brand-icon rotate-n-15">
         <!-- <i class="fas fa-laugh-wink"></i> -->
-         <img src="https://thumbs.dreamstime.com/b/car-mechanic-concept-avatar-vector-illustration-graphic-design-135452674.jpg" width="80px" height="80px" alt="">
+         <!-- <img src="https://thumbs.dreamstime.com/b/car-mechanic-concept-avatar-vector-illustration-graphic-design-135452674.jpg" width="80px" height="80px" alt=""> -->
     </div>
     <div class="sidebar-brand-text mx-3">{{ __('sidebar.car_project') }}</sup></div>
 </a>
