@@ -79,7 +79,10 @@
                         <div class="col-lg-12">
                             <div class="p-5">
                                 <div class="text-center">
-                                    <h1 class="h4 text-gray-900 mb-4">{{ __('login.car_project_login') }}</h1>
+                                    <center>
+                                        <img src="{{asset('sitelogo/logo.jpg')}}" style="width: 150px;height:110px;" alt="">
+                                    </center>
+                                    <h6 style="font-size: 20px;" class="h4 text-gray-900 mb-4">{{ __('login.car_project_login') }}</h6>
                                     @if (session('error'))
                                     <div class="alert alert-danger">
                                         {{ session('error') }}

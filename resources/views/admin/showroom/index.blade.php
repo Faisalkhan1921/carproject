@@ -5,6 +5,51 @@
 
 <div class="container-fluid">
 
+
+<form id="totalForm">
+    <div class="col-md-12">
+        <div class="row">
+            <!-- Date Range Selection -->
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label for="range">Select Date Range:</label>
+                    <select name="range" id="range" class="form-control">
+                        <option value="today">Today</option>
+                        <option value="this_week">This Week</option>
+                        <option value="this_month">This Month</option>
+                        <option value="this_year">This Year</option>
+                        <option value="custom">Custom Range</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="custom-date-range" style="display: none;">
+                    <label for="start_date">Start Date:</label>
+                    <input type="date" name="start_date" id="start_date" class="form-control">
+
+                    <label for="end_date">End Date:</label>
+                    <input type="date" name="end_date" id="end_date" class="form-control">
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="col-md-4 d-flex align-items-center">
+                <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Calculate Total</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    document.getElementById('range').addEventListener('change', function() {
+        if (this.value === 'custom') {
+            document.getElementById('custom-date-range').style.display = 'block';
+        } else {
+            document.getElementById('custom-date-range').style.display = 'none';
+        }
+    });
+</script>
+
+
     <form id="archiveForm" method="POST" onsubmit="return handleSubmit()">
         @csrf
 
@@ -56,11 +101,18 @@
                 </div>
 
 
+
                 <div class="col-md-12">
                     <div class="row">
-                        <div class="col-md-6"></div>
+
+
+                    <div class="col-md-6 mt-3">
+                        <h3 style="font-size: 20px;font-weight:bold;">Total:</h3>
+                        <p id="totalAmount">0 AED</p>
+                    </div>
+
                         <div class="col-md-6">
-                <h7> {{ __('showroompage.current_time_saudi_arabia') }}</h7>
+                <h7> {{ __('showroompage.current_time_libya') }}</h7>
                 <div id="time" style="font-size: 2rem; font-weight: bold;"></div>
             </div>
                     </div>
@@ -73,7 +125,44 @@
         </div>
     </form>
 </div>
+<script>
+    document.getElementById('range').addEventListener('change', function() {
+        if (this.value === 'custom') {
+            document.getElementById('custom-date-range').style.display = 'block';
+        } else {
+            document.getElementById('custom-date-range').style.display = 'none';
+        }
+    });
 
+    // Handle the form submission using AJAX
+    document.getElementById('totalForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        let formData = new FormData(this);
+        let range = document.getElementById('range').value;
+        let startDate = document.getElementById('start_date').value;
+        let endDate = document.getElementById('end_date').value;
+
+        // Send the AJAX request
+        fetch('{{ route("calculate-total") }}', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                range: range,
+                start_date: startDate,
+                end_date: endDate,
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('totalAmount').textContent = data.total + " AED";
+        })
+        .catch(error => console.error('Error:', error));
+    });
+</script>
 <!-- Add New Modal -->
 <div class="modal fade" id="addNewModal" tabindex="-1" role="dialog" aria-labelledby="addNewModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -382,29 +471,32 @@
     }
 </script>
 
+
 <script>
-        // Function to update the time
-        function updateTime() {
-            // Get the current date and time in UTC
-            const now = new Date();
+    // Function to update the time
+    function updateTime() {
+        // Create a new Date object
+        const now = new Date();
 
-            // Convert to Saudi Arabia time (AST is UTC+3)
-            const saudiTime = new Date(now.getTime() + (3 * 60 * 60 * 1000));
+        // Format the time for Libya (EET time zone)
+        const libyaTime = new Intl.DateTimeFormat('en-GB', {
+            timeZone: 'Africa/Tripoli',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false // Use 24-hour format
+        }).format(now);
 
-            // Format the time to HH:MM:SS
-            const hours = String(saudiTime.getHours()).padStart(2, '0');
-            const minutes = String(saudiTime.getMinutes()).padStart(2, '0');
-            const seconds = String(saudiTime.getSeconds()).padStart(2, '0');
+        // Display the time in the designated div
+        document.getElementById('time').textContent = libyaTime;
+    }
 
-            // Display the time in the designated div
-            document.getElementById('time').textContent = `${hours}:${minutes}:${seconds}`;
-        }
+    // Update the time every second
+    setInterval(updateTime, 1000);
 
-        // Update the time every second
-        setInterval(updateTime, 1000);
+    // Initial call to display the time immediately
+    updateTime();
+</script>
 
-        // Initial call to display the time immediately
-        updateTime();
-    </script>
 
 @endsection

@@ -32,8 +32,12 @@ $admin = Auth::guard('web')->user()->role_id;
     <div class="sidebar-brand-icon rotate-n-15">
         <!-- <i class="fas fa-laugh-wink"></i> -->
          <!-- <img src="https://thumbs.dreamstime.com/b/car-mechanic-concept-avatar-vector-illustration-graphic-design-135452674.jpg" width="80px" height="80px" alt=""> -->
+
+                                    
     </div>
-    <div class="sidebar-brand-text mx-3">{{ __('sidebar.car_project') }}</sup></div>
+    <img src="{{asset('sitelogo/logo.jpg')}}" style="width: 70ox;height:70px;" alt="">
+
+    <div class="sidebar-brand-text mx-1">{{ __('sidebar.car_project') }}</sup></div>
 </a>
 
 <!-- Divider -->

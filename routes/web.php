@@ -19,7 +19,7 @@ use Laravel\Jetstream\Http\Controllers\Inertia\CurrentUserController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 Route::middleware([
@@ -37,6 +37,9 @@ Route::middleware([
     Route::post('/admin/store/card_part_kind_price', [ShowRoomController::class, 'storeCardPartKindPrice'])->name('admin.store.card_part_kind_price');
     Route::put('admin/update/carparts/{id}', [ShowRoomController::class, 'update'])->name('admin.update.carparts');
     Route::delete('/admin/carparts/{id}', [ShowRoomController::class, 'destroy'])->name('admin.delete.carparts');
+    Route::post('/calculate-total', [ShowRoomController::class, 'calculateTotal'])->name('calculate-total');
+
+
     // routes/web.php
 
 
