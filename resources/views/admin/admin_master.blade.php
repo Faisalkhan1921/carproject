@@ -29,7 +29,7 @@
         <div id="content-wrapper" class="d-flex flex-column">
 
             <!-- Main Content -->
-            <div id="content">
+            <div id="content" style="">
 
                 <!-- Topbar -->
                @include('admin.body.navbar')

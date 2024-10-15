@@ -108,7 +108,7 @@
 
                     <div class="col-md-6 mt-3">
                         <h3 style="font-size: 20px;font-weight:bold;">Total:</h3>
-                        <p id="totalAmount">0 AED</p>
+                        <p id="totalAmount">0 LYB</p>
                     </div>
 
                         <div class="col-md-6">
@@ -471,9 +471,8 @@
     }
 </script>
 
-
 <script>
-    // Function to update the time
+    // Function to update the time and day
     function updateTime() {
         // Create a new Date object
         const now = new Date();
@@ -487,14 +486,18 @@
             hour12: false // Use 24-hour format
         }).format(now);
 
-        // Display the time in the designated div
-        document.getElementById('time').textContent = libyaTime;
+        // Get the day of the week
+        const dayOptions = { weekday: 'long', timeZone: 'Africa/Tripoli' };
+        const libyaDay = new Intl.DateTimeFormat('en-GB', dayOptions).format(now);
+
+        // Display the day and time in the designated div
+        document.getElementById('time').textContent = ` ${libyaTime} - ${libyaDay}`;
     }
 
-    // Update the time every second
+    // Update the time and day every second
     setInterval(updateTime, 1000);
 
-    // Initial call to display the time immediately
+    // Initial call to display the time and day immediately
     updateTime();
 </script>
 
