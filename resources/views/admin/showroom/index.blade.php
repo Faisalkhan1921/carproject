@@ -108,7 +108,7 @@
 
                     <div class="col-md-6 mt-3">
                         <h3 style="font-size: 20px;font-weight:bold;">Total:</h3>
-                        <p id="totalAmount">0 LYB</p>
+                        <p id="totalAmount">0 LYD</p>
                     </div>
 
                         <div class="col-md-6">
