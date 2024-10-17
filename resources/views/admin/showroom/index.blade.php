@@ -4,22 +4,26 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
 <div class="container-fluid">
+<style>
+    .range-btn.active {
+    background-color: #FF6600 !important; /* Blue background for active */
+    color: white !important;           /* White text for active button */
+    border-color: #007bff;             /* Blue border */
+}
 
-
+</style>
 <form id="totalForm">
     <div class="col-md-12">
         <div class="row">
-            <!-- Date Range Selection -->
+            <!-- Date Range Buttons -->
             <div class="col-md-8">
                 <div class="form-group">
-                    <label for="range">Select Date Range:</label>
-                    <select name="range" id="range" class="form-control">
-                        <option value="today">Today</option>
-                        <option value="this_week">This Week</option>
-                        <option value="this_month">This Month</option>
-                        <option value="this_year">This Year</option>
-                        <option value="custom">Custom Range</option>
-                    </select>
+                    <button type="button" class="btn btn-primary range-btn" data-range="today">Today</button>
+                    <button type="button" class="btn btn-secondary range-btn" data-range="yesterday">Yesterday</button>
+                    <button type="button" class="btn btn-success range-btn" data-range="this_week">This Week</button>
+                    <button type="button" class="btn btn-info range-btn" data-range="this_month">This Month</button>
+                    <button type="button" class="btn btn-warning range-btn" data-range="this_year">This Year</button>
+                    <button type="button" class="btn btn-dark range-btn" data-range="custom">Custom Range</button>
                 </div>
 
                 <div class="form-group" id="custom-date-range" style="display: none;">
@@ -28,12 +32,9 @@
 
                     <label for="end_date">End Date:</label>
                     <input type="date" name="end_date" id="end_date" class="form-control">
-                </div>
-            </div>
 
-            <!-- Submit Button -->
-            <div class="col-md-4 d-flex align-items-center">
-                <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Calculate Total</button>
+                    <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Calculate Total</button>
+                </div>
             </div>
         </div>
     </div>
@@ -63,42 +64,120 @@
                 </h5>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered users-table" id="dataTable" width="100%" cellspacing="0">
-                        <thead>
-                            <tr>
-                                <th> {{ __('showroompage.sno') }}</th>
-                                <th> {{ __('showroompage.parts') }}</th>
-                                <th> {{ __('showroompage.kinds') }}</th>
-                                <th> {{ __('showroompage.price') }}</th>
-                                <th> {{ __('showroompage.action') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody id="showroom-table-body">
-                            @php $counter = 1; @endphp
-                            @if(count($data) != 0)
-                                @foreach($data as $item)
-                                    <tr id="row-{{ $item->id }}">
-                                        <td>{{ $counter++ }}</td>
-                                        <td>{{ $item->part }}</td>
-                                        <td>{{ $item->kind }}</td>
-                                        <td>{{ $item->price }}</td>
-                                        <td>
-                                            <a href="javascript:void(0)" class="btn btn-primary btn-sm edit-car-part" data-id="{{ $item->id }}" data-part="{{ $item->part }}" data-kind="{{ $item->kind }}" data-price="{{ $item->price }}"> {{ __('showroompage.edit') }}</a>
-                                            <a href="javascript:void(0)" data-id="{{ $item->id }}" class="btn btn-danger btn-sm delete-car-part"> {{ __('showroompage.delete') }}</a>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            @else
-                                <tr>
-                                    <td colspan="5" class="text-center text-danger">
-                                        <strong>No Data Available</strong>
-                                    </td>
-                                </tr>
-                            @endif
-                        </tbody>
-                    </table>
-                </div>
+            <div class="table-responsive">
+    <table class="table table-bordered users-table" id="dataTable" width="100%" cellspacing="0">
+        <thead>
+            <tr>
+                <th> {{ __('showroompage.sno') }}</th>
+                <th> {{ __('showroompage.parts') }}</th>
+                <th> {{ __('showroompage.kinds') }}</th>
+                <th> {{ __('showroompage.price') }}</th>
+                <th> {{ __('showroompage.action') }}</th>
+            </tr>
+        </thead>
+        <tbody id="showroom-table-body">
+            <!-- Populate the table with data from the controller -->
+            @foreach ($data as $index => $item)
+                <tr>
+                    <td>{{ $index + 1 }}</td>
+                    <td>{{ $item->part }}</td>
+                    <td>{{ $item->kind }}</td>
+                    <td>{{ $item->price }}</td>
+                    <td>
+                        <a href="javascript:void(0)" class="btn btn-primary btn-sm edit-car-part" 
+                            data-id="{{ $item->id }}" data-part="{{ $item->part }}" 
+                            data-kind="{{ $item->kind }}" data-price="{{ $item->price }}">Edit</a>
+                        <a href="javascript:void(0)" class="btn btn-danger btn-sm delete-car-part" 
+                            data-id="{{ $item->id }}">Delete</a>
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle the range button clicks
+    document.querySelectorAll('.range-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            let range = this.getAttribute('data-range');
+            let startDate = '';
+            let endDate = '';
+
+            // Remove active class from all buttons
+            document.querySelectorAll('.range-btn').forEach(btn => btn.classList.remove('active'));
+
+                // Add active class to the clicked button
+                this.classList.add('active');
+
+
+            if (range === 'custom') {
+                document.getElementById('custom-date-range').style.display = 'block';
+            } else {
+                document.getElementById('custom-date-range').style.display = 'none';
+                fetchTotalAndUpdateTable(range, startDate, endDate);
+            }
+        });
+    });
+
+    // Handle custom range form submission
+    document.getElementById('totalForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        let startDate = document.getElementById('start_date').value;
+        let endDate = document.getElementById('end_date').value;
+        fetchTotalAndUpdateTable('custom', startDate, endDate);
+    });
+
+    // Function to fetch total and update the table
+    function fetchTotalAndUpdateTable(range = 'all', startDate = '', endDate = '') {
+        fetch('{{ route("calculate-total") }}', {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                range: range,
+                start_date: startDate,
+                end_date: endDate,
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Update table body with the filtered data
+            document.getElementById('totalAmount').textContent = data.total + " LYD";
+
+            let tableBody = document.getElementById('showroom-table-body');
+            tableBody.innerHTML = ''; // Clear the table
+
+            if (data.records.length > 0) {
+                data.records.forEach((item, index) => {
+                    let row = `<tr>
+                        <td>${index + 1}</td>
+                        <td>${item.part}</td>
+                        <td>${item.kind}</td>
+                        <td>${item.price}</td>
+                        <td>
+                            <a href="javascript:void(0)" class="btn btn-primary btn-sm edit-car-part" 
+                                data-id="${item.id}" data-part="${item.part}" 
+                                data-kind="${item.kind}" data-price="${item.price}">Edit</a>
+                            <a href="javascript:void(0)" class="btn btn-danger btn-sm delete-car-part" 
+                                data-id="${item.id}">Delete</a>
+                        </td>
+                    </tr>`;
+                    tableBody.innerHTML += row;
+                });
+            } else {
+                tableBody.innerHTML = `<tr><td colspan="5" class="text-center text-danger">
+                    <strong>No Data Available</strong></td></tr>`;
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+});
+
+</script>
 
 
 
@@ -125,44 +204,8 @@
         </div>
     </form>
 </div>
-<script>
-    document.getElementById('range').addEventListener('change', function() {
-        if (this.value === 'custom') {
-            document.getElementById('custom-date-range').style.display = 'block';
-        } else {
-            document.getElementById('custom-date-range').style.display = 'none';
-        }
-    });
 
-    // Handle the form submission using AJAX
-    document.getElementById('totalForm').addEventListener('submit', function(e) {
-        e.preventDefault();
 
-        let formData = new FormData(this);
-        let range = document.getElementById('range').value;
-        let startDate = document.getElementById('start_date').value;
-        let endDate = document.getElementById('end_date').value;
-
-        // Send the AJAX request
-        fetch('{{ route("calculate-total") }}', {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                range: range,
-                start_date: startDate,
-                end_date: endDate,
-            }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('totalAmount').textContent = data.total + " AED";
-        })
-        .catch(error => console.error('Error:', error));
-    });
-</script>
 <!-- Add New Modal -->
 <div class="modal fade" id="addNewModal" tabindex="-1" role="dialog" aria-labelledby="addNewModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">

@@ -12,10 +12,34 @@ class ShowRoomController extends Controller
     //
     public function index(Request $request)
     {
-        $data = ShowRoom::all();
-
-        return view("admin.showroom.index",compact('data'));
+        // Check if this is an AJAX request for filtering data
+        if ($request->ajax()) {
+            // Filter data based on the selected range
+            if ($request->range === 'today') {
+                $data = ShowRoom::whereDate('created_at', now())->orderBy('created_at', 'desc')->get();
+            } elseif ($request->range === 'yesterday') {
+                $data = ShowRoom::whereDate('created_at', now()->subDay())->orderBy('created_at', 'desc')->get();
+            } elseif ($request->range === 'custom') {
+                $start_date = $request->start_date;
+                $end_date = $request->end_date;
+                $data = ShowRoom::whereBetween('created_at', [$start_date, $end_date])
+                                ->orderBy('created_at', 'desc')->get();
+            } else {
+                // Default case: show all data
+                $data = ShowRoom::orderBy('created_at', 'desc')->get();
+            }
+    
+            // Return the filtered data as JSON for AJAX
+            return response()->json(['records' => $data]);
+        }
+    
+        // For the initial page load, fetch all data
+        $data = ShowRoom::orderBy('created_at', 'desc')->get();
+    
+        // Return the view with all records
+        return view("admin.showroom.index", compact('data'));
     }
+    
 
     public function storeCardPartKindPrice(Request $request)
 {
@@ -76,41 +100,53 @@ public function destroy($id)
 
 public function calculateTotal(Request $request)
 {
-
     $range = $request->input('range');
     $total = 0;
+    $records = [];
 
     switch ($range) {
         case 'today':
-            $total = ShowRoom::whereDate('created_at', Carbon::today())->sum('price');
+            $records = ShowRoom::whereDate('created_at', Carbon::today())->get();
+            $total = $records->sum('price');
+            break;
+
+        case 'yesterday':
+            $records = ShowRoom::whereDate('created_at', Carbon::yesterday())->get();
+            $total = $records->sum('price');
             break;
 
         case 'this_week':
-            $total = ShowRoom::whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->sum('price');
+            $records = ShowRoom::whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->get();
+            $total = $records->sum('price');
             break;
 
         case 'this_month':
-            $total = ShowRoom::whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->sum('price');
+            $records = ShowRoom::whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->get();
+            $total = $records->sum('price');
             break;
 
         case 'this_year':
-            $total = ShowRoom::whereBetween('created_at', [Carbon::now()->startOfYear(), Carbon::now()->endOfYear()])->sum('price');
+            $records = ShowRoom::whereBetween('created_at', [Carbon::now()->startOfYear(), Carbon::now()->endOfYear()])->get();
+            $total = $records->sum('price');
             break;
 
         case 'custom':
             $start_date = $request->input('start_date');
             $end_date = $request->input('end_date');
             if ($start_date && $end_date) {
-                $total = ShowRoom::whereBetween('created_at', [$start_date, $end_date])->sum('price');
+                $records = ShowRoom::whereBetween('created_at', [$start_date, $end_date])->get();
+                $total = $records->sum('price');
             }
             break;
 
         default:
-            $total = ShowRoom::whereDate('created_at', Carbon::today())->sum('price');
+            $records = ShowRoom::whereDate('created_at', Carbon::today())->get();
+            $total = $records->sum('price');
             break;
     }
 
-    // Return the total as a JSON response
-    return response()->json(['total' => $total]);
+    // Return the total and records as a JSON response
+    return response()->json(['total' => $total, 'records' => $records]);
 }
+
 }
