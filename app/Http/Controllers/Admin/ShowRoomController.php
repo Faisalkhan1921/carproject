@@ -44,8 +44,9 @@ class ShowRoomController extends Controller
     public function storeCardPartKindPrice(Request $request)
 {
     $counter = ShowRoom::count() + 1; // Update based on your logic
-
+// dd($request->names);
     $partKindPrice = new ShowRoom();
+    $partKindPrice->name = $request->names;
     $partKindPrice->part = $request->part;
     $partKindPrice->kind = $request->kind;
     $partKindPrice->price = $request->price;
@@ -53,6 +54,7 @@ class ShowRoomController extends Controller
 
     return response()->json([
         'counter' => $counter,
+        'name' => $partKindPrice->name,
         'part' => $partKindPrice->part,
         'kind' => $partKindPrice->kind,
         'price' => $partKindPrice->price
@@ -63,6 +65,7 @@ public function update(Request $request, $id)
     $part = ShowRoom::find($id);
     
     if ($part) {
+        $part->name = $request->input('name');
         $part->part = $request->input('part');
         $part->kind = $request->input('kind');
         $part->price = $request->input('price');
@@ -96,6 +99,7 @@ public function destroy($id)
         'success' => true,
         'message' => 'Car part deleted successfully'
     ], 200);
+    // return redirect()->back();
 }
 
 public function calculateTotal(Request $request)

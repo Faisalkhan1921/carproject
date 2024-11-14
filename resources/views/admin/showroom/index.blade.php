@@ -69,6 +69,7 @@
         <thead>
             <tr>
                 <th> {{ __('showroompage.sno') }}</th>
+                <th> {{ __('showroompage.names') }}</th>
                 <th> {{ __('showroompage.parts') }}</th>
                 <th> {{ __('showroompage.kinds') }}</th>
                 <th> {{ __('showroompage.price') }}</th>
@@ -80,6 +81,7 @@
             @foreach ($data as $index => $item)
                 <tr>
                     <td>{{ $index + 1 }}</td>
+                    <td>{{ $item->name }}</td>
                     <td>{{ $item->part }}</td>
                     <td>{{ $item->kind }}</td>
                     <td>{{ $item->price }}</td>
@@ -98,6 +100,9 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Set "Today" as default selected range and fetch data
+    fetchTotalAndUpdateTable('this_year');
+
     // Handle the range button clicks
     document.querySelectorAll('.range-btn').forEach(button => {
         button.addEventListener('click', function() {
@@ -108,9 +113,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // Remove active class from all buttons
             document.querySelectorAll('.range-btn').forEach(btn => btn.classList.remove('active'));
 
-                // Add active class to the clicked button
-                this.classList.add('active');
-
+            // Add active class to the clicked button
+            this.classList.add('active');
 
             if (range === 'custom') {
                 document.getElementById('custom-date-range').style.display = 'block';
@@ -155,6 +159,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 data.records.forEach((item, index) => {
                     let row = `<tr>
                         <td>${index + 1}</td>
+                        <td>${item.name}</td>
                         <td>${item.part}</td>
                         <td>${item.kind}</td>
                         <td>${item.price}</td>
@@ -176,7 +181,6 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => console.error('Error:', error));
     }
 });
-
 </script>
 
 
@@ -219,6 +223,13 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="modal-body">
                 <form id="addPartForm">
                     <div class="form-group">
+                    <label for="username">Name</label>
+                    <select name="names" class="form-control" id="username">
+
+                    </select>
+                    </div>
+
+                    <div class="form-group">
                         <label for="partKind"> {{ __('showroompage.parts') }}</label>
                         <select class="form-control" id="partKind" required></select>
                     </div>
@@ -255,6 +266,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     <input type="hidden" id="editPartId" value="">
                     
                     <div class="form-group">
+                    <label for="username">Name</label>
+                    <select name="names" class="form-control" id="editusername">
+
+                    </select>
+                    </div>
+
+                    <div class="form-group">
                         <label for="editPartKind"> {{ __('showroompage.parts') }}</label>
                         <select class="form-control" id="editPartKind" required></select>
                     </div>
@@ -282,7 +300,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <script>
     // Fetch data and populate select options
+    
     document.addEventListener('DOMContentLoaded', function () {
+
+
         fetch("{{ asset('partkinds/car_parts.json') }}")
             .then(response => response.json())
             .then(data => {
@@ -299,6 +320,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
 
+            
+// Trigger this function when the modal opens to load names
+$('#addNewModal').on('show.bs.modal', function () {
+    fetch("{{ asset('partkinds/names.json') }}")
+        .then(response => response.json())
+        .then(data => {
+            const usernameSelect = document.getElementById('username');
+            usernameSelect.innerHTML = ''; // Clear any existing options
+
+            // Populate select options with names from the "names" array
+            data.names.forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                option.text = name;
+                usernameSelect.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Error fetching names:', error));
+});
+
+
+
         fetch("{{ asset('partkinds/libyan_cars.json') }}")
             .then(response => response.json())
             .then(data => {
@@ -314,198 +357,257 @@ document.addEventListener('DOMContentLoaded', function() {
                     editCarModelSelect.appendChild(option.cloneNode(true)); // Populate edit select with same options
                 });
             });
+
+       
+            
+    
     });
 
-    // AJAX form submission for adding a part
     $('#addPartForm').submit(function (e) {
-        e.preventDefault();
+    e.preventDefault();
 
-        let part = $('#partKind').val();
-        let kind = $('#carModel').val();
-        let price = $('#price').val();
-        let _token = $('meta[name="csrf-token"]').attr('content');
+    let part = $('#partKind').val();
+    let kind = $('#carModel').val();
+    let price = parseFloat($('#price').val()); // Convert price to float
+    let _token = $('meta[name="csrf-token"]').attr('content');
+    let names = $('#username').val(); // Retrieve the selected name
 
-        $.ajax({
-            url: "{{ route('admin.store.card_part_kind_price') }}",
-            type: "POST",
-            data: {
-                part: part,
-                kind: kind,
-                price: price,
-                _token: _token
-            },
-            success: function (response) {
-                if (response) {
-                    // Append new data to the table dynamically
-                    let newRow = `<tr id="row-${response.id}">
-                        <td>${response.counter}</td>
-                        <td>${response.part}</td>
-                        <td>${response.kind}</td>
-                        <td>${response.price}</td>
-                        <td>
-                            <a href="javascript:void(0)" class="btn btn-primary btn-sm edit-car-part" data-id="${response.id}" data-part="${response.part}" data-kind="${response.kind}" data-price="${response.price}">Edit</a>
-                            <a href="javascript:void(0)" data-id="${response.id}" class="btn btn-danger btn-sm delete-car-part">Delete</a>
-                        </td>
-                    </tr>`;
-                    $('#showroom-table-body').append(newRow);
+    $.ajax({
+        url: "{{ route('admin.store.card_part_kind_price') }}",
+        type: "POST",
+        data: {
+            names: names, 
+            part: part,
+            kind: kind,
+            price: price,
+            _token: _token
+        },
+        success: function (response) {
+            if (response) {
+                // Append new data to the table dynamically
+                let newRow = `<tr id="row-${response.id}">
+                    <td>${response.counter}</td>
+                    <td>${response.name}</td>
+                    <td>${response.part}</td>
+                    <td>${response.kind}</td>
+                    <td>${response.price}</td>
+                    <td>
+                        <a href="javascript:void(0)" class="btn btn-primary btn-sm edit-car-part" data-id="${response.id}" data-part="${response.part}" data-kind="${response.kind}" data-price="${response.price}">Edit</a>
+                        <a href="javascript:void(0)" data-id="${response.id}" class="btn btn-danger btn-sm delete-car-part">Delete</a>
+                    </td>
+                </tr>`;
+                $('#showroom-table-body').append(newRow);
 
-                    // Close modal
-                    $('#addNewModal').modal('hide');
-                    $('.modal-backdrop').remove(); // In case the backdrop persists
+                // Update the total amount
+                let currentTotal = parseFloat($('#totalAmount').text().replace(' LYD', '')) || 0;
+                let newTotal = currentTotal + price;
+                $('#totalAmount').text(newTotal + " LYD");
 
-                    // Reset form fields
-                    $('#addPartForm')[0].reset();
+                // Close modal
+                $('#addNewModal').hide();
+$('.modal-backdrop').remove(); // Removes any lingering backdrop
+$('body').removeClass('modal-open'); // Ensures body scroll is restored
+$('body').css('overflow', ''); // Resets any overflow property set by Bootstrap
 
-                    // Display success message with SweetAlert
-                    Swal.fire({
-                        title: 'Success!',
-                        text: 'New part added successfully.',
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    });
-                }
-            },
-            error: function (error) {
-                console.log('Error:', error);
+                // Reset form fields
+                $('#addPartForm')[0].reset();
+
+                // Display success message with SweetAlert
                 Swal.fire({
-                    title: 'Error!',
-                    text: 'Failed to add new part. Please try again.',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
+                    title: 'Success!',
+                    text: 'New part added successfully.',
+                    icon: 'success',
+                    // confirmButtonText: 'OK'
+                    timer: 2000, // Set timer for 2 seconds
+                    showConfirmButton: false // Hide confirm button
+
                 });
             }
-        });
+        },
+        error: function (error) {
+            console.log('Error:', error);
+            Swal.fire({
+                title: 'Error!',
+                text: 'Failed to add new part. Please try again.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        }
     });
+});
+
 
     // Open edit modal and populate fields with row data
-    $(document).on('click', '.edit-car-part', function () {
-        const id = $(this).data('id');
-        const part = $(this).data('part');
-        const kind = $(this).data('kind');
-        const price = $(this).data('price');
+// Open edit modal and populate fields with row data
+$(document).on('click', '.edit-car-part', function () {
+    const id = $(this).data('id');
+    const name = $(this).data('name'); // Fetch the name from data attribute
+    const part = $(this).data('part');
+    const kind = $(this).data('kind');
+    const price = $(this).data('price');
 
-        $('#editPartId').val(id);
-        $('#editPartKind').val(part);
-        $('#editCarModel').val(kind);
-        $('#editPrice').val(price);
+    // Set the values for part, kind, and price fields
+    $('#editPartId').val(id);
+    $('#editPartKind').val(part);
+    $('#editCarModel').val(kind);
+    $('#editPrice').val(price);
 
-        $('#editModal').modal('show');
-    });
+    // Fetch and populate the names dropdown
+    fetch("{{ asset('partkinds/names.json') }}")
+        .then(response => response.json())
+        .then(data => {
+            const editUsernameSelect = $('#editusername');
+            editUsernameSelect.empty(); // Clear any existing options
 
-    // AJAX form submission for updating a part
-    $('#editPartForm').submit(function (e) {
-        e.preventDefault();
+            // Populate names and set the selected one
+            data.names.forEach(currentName => {
+                const isSelected = currentName === name ? 'selected' : '';
+                editUsernameSelect.append(`<option value="${currentName}" ${isSelected}>${currentName}</option>`);
+            });
 
-        let id = $('#editPartId').val();
-        let part = $('#editPartKind').val();
-        let kind = $('#editCarModel').val();
-        let price = $('#editPrice').val();
-        let _token = $('meta[name="csrf-token"]').attr('content');
+            // Debugging: Check if the name was selected correctly
+            console.log(`Expected name: ${name}, Selected name: ${editUsernameSelect.find('option:selected').text()}`);
+        })
+        .catch(error => console.error('Error fetching names:', error));
 
-        $.ajax({
-            url: "{{ route('admin.update.carparts', '') }}/" + id,
-            type: "PUT",
-            data: {
-                part: part,
-                kind: kind,
-                price: price,
-                _token: _token
-            },
-            success: function (response) {
-                if (response.success) {
-                    // Update the table row with new data
-                    let row = $('#row-' + id);
-                    row.find('td:eq(1)').text(part);
-                    row.find('td:eq(2)').text(kind);
-                    row.find('td:eq(3)').text(price);
+    // Show the modal
+    $('#editModal').modal('show');
+});
 
-                    // Close modal
-                    $('#editModal').modal('hide');
-                    $('.modal-backdrop').remove(); // In case the backdrop persists
+// AJAX form submission for updating a part
+$('#editPartForm').submit(function (e) {
+    e.preventDefault();
 
-                    // Display success message with SweetAlert
-                    Swal.fire({
-                        title: 'Updated!',
-                        text: 'Part updated successfully.',
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    });
-                } else {
-                    Swal.fire({
-                        title: 'Error!',
-                        text: response.message || 'Failed to update part. Please try again.',
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
-                }
-            },
-            error: function (error) {
-                console.log('Error:', error);
+    let id = $('#editPartId').val();
+    let name = $('#editusername').val(); // Fetch selected name
+    let part = $('#editPartKind').val();
+    let kind = $('#editCarModel').val();
+    let price = $('#editPrice').val();
+    let _token = $('meta[name="csrf-token"]').attr('content');
+
+    $.ajax({
+        url: "{{ route('admin.update.carparts', '') }}/" + id,
+        type: "PUT",
+        data: {
+            name: name, // Include name in the data
+            part: part,
+            kind: kind,
+            price: price,
+            _token: _token
+        },
+        success: function (response) {
+            if (response.success) {
+                // Update the table row with new data
+                let row = $('#row-' + id);
+                row.find('td:eq(1)').text(part);
+                row.find('td:eq(2)').text(kind);
+                row.find('td:eq(3)').text(price);
+
+                // Close modal
+                $('#editModal').modal('hide');
+                $('.modal-backdrop').remove();
+
+                // Display success message with SweetAlert
+                Swal.fire({
+                    title: 'Updated!',
+                    text: 'Part updated successfully.',
+                    icon: 'success',
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                    location.reload();
+                });
+            } else {
                 Swal.fire({
                     title: 'Error!',
-                    text: 'Failed to update part. Please try again.',
+                    text: response.message || 'Failed to update part. Please try again.',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 });
             }
-        });
+        },
+        error: function (error) {
+            console.log('Error:', error);
+            Swal.fire({
+                title: 'Error!',
+                text: 'Failed to update part. Please try again.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        }
     });
+});
 
-    // Delete part functionality
     $(document).on('click', '.delete-car-part', function () {
-        const id = $(this).data('id');
-        const row = $('#row-' + id);
+    const id = $(this).data('id');
+    const row = $('#row-' + id);
 
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: "{{ route('admin.delete.carparts', '') }}/" + id,
-                    type: "DELETE",
-                    data: {
-                        _token: $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function (response) {
-                        if (response.success) {
-                            // Remove the row from the table
-                            row.remove();
+    // Ensure the row is found before proceeding
 
-                            // Display success message with SweetAlert
-                            Swal.fire({
-                                title: 'Deleted!',
-                                text: 'Part has been deleted.',
-                                icon: 'success',
-                                confirmButtonText: 'OK'
-                            });
-                        } else {
-                            Swal.fire({
-                                title: 'Error!',
-                                text: response.message || 'Failed to delete part. Please try again.',
-                                icon: 'error',
-                                confirmButtonText: 'OK'
-                            });
-                        }
-                    },
-                    error: function (error) {
-                        console.log('Error:', error);
+
+    // Get the price of the part to update the total
+    const priceToRemove = parseFloat(row.find('td:eq(3)').text()) || 0;
+
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: "{{ route('admin.delete.carparts', '') }}/" + id,
+                type: "DELETE",
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function (response) {
+                    if (response.success) {
+                        // Update total amount
+                        let currentTotal = parseFloat($('#totalAmount').text().replace(' LYD', '')) || 0;
+                        let newTotal = currentTotal - priceToRemove;
+                        $('#totalAmount').text(newTotal.toFixed(2) + " LYD"); // Update displayed total
+
+                        // Remove the row from the table
+                        row.remove();
+
+                        // Display success message with SweetAlert
+                        Swal.fire({
+                            title: 'Deleted!',
+                            text: 'Part has been deleted.',
+                            icon: 'success',
+                            timer: 2000, // Set timer for 2 seconds
+                            showConfirmButton: false // Hide confirm button
+                        }).then(() => {
+                            // Reload the page after the timer
+                            location.reload();
+                        });
+                    } else {
                         Swal.fire({
                             title: 'Error!',
-                            text: 'Failed to delete part. Please try again.',
+                            text: response.message || 'Failed to delete part. Please try again.',
                             icon: 'error',
                             confirmButtonText: 'OK'
                         });
                     }
-                });
-            }
-        });
+                },
+                error: function (error) {
+                    console.log('Error:', error);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Failed to delete part. Please try again.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        }
     });
+});
+
 
     // Handle form submission for the add part modal
     function handleSubmit() {
